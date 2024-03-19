@@ -20,6 +20,18 @@
   (is (multiple-value-bind (x y) (-> 3 (1+) (values 2))
         (= (+ x y) 6))))
 
+(defmacro f_ (&rest body)
+  `(lambda (_) ,@body))
+
+(defmacro ff_ (&rest body)
+  `(f_ ,@body))
+
+(test ->-macro
+  ;; Macro which expands to lambda
+  (is (= 3 (-> 3 (f_ _))))
+  ;; Macro which expands to macro
+  (is (= 3 (-> 3 (ff_ _)))))
+
 (test ->>-test
   (is (= 3 (->> 3)))
   (is (= (->> 1 (+ 2 3) #'1+ 1+ (lambda (x) (+ x 1)) (1+)) 10))
